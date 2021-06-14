@@ -15,7 +15,7 @@ s3 = boto3.client(
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_BINDS"] = dict_for_database
+# app.config["SQLALCHEMY_BINDS"] = dict_for_database
 db = SQLAlchemy(app)
 
 allow_path = set(["jpg","png","JPG","PNG"])
@@ -51,16 +51,16 @@ def get_img():
         arr.append(item)
     return jsonify({"data":arr})
 
-@app.route("/get_another")
-def get_another():
-    engine = create_engine(app.config['SQLALCHEMY_BINDS']['db2'])
-    sql = f"select url,text from img_test order by id desc"
-    r = db.session.execute(sql,bind=engine)
-    arr = []
-    for i in r:
-        item = {"url":i[0],"text":i[1]}
-        arr.append(item)
-    return jsonify({"data":arr})
+# @app.route("/get_another")
+# def get_another():
+#     engine = create_engine(app.config['SQLALCHEMY_BINDS']['db2'])
+#     sql = f"select url,text from img_test order by id desc"
+#     r = db.session.execute(sql,bind=engine)
+#     arr = []
+#     for i in r:
+#         item = {"url":i[0],"text":i[1]}
+#         arr.append(item)
+#     return jsonify({"data":arr})
 
 # @app.route("/word",methods=["POST"])
 # def word():
