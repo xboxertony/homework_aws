@@ -3,13 +3,28 @@
     width: 100px;
     height: 100px;
   }
+  #form_test{
+      display: flex;
+      flex-direction: column;
+      width: 200px;
+  }
+  #form_test input{
+      margin:10px 0;
+  }
   #message_board{
       display: flex;
       flex-direction: column;
   }
+  .msg_img{
+      margin: 20px 0;
+  }
+  .msg_box{
+      border-bottom: 1px solid black;
+  }
 </style>
 <form id="form_test" enctype="multipart/form-data">
   <input type="file" size="30" name="photo" id="file"/>
+  <input type="text" id="text">
   <input type="submit" id="upload" />
 </form>
 <div id="message_board"></div>
@@ -23,20 +38,68 @@
     
     async function upload_file(){
         let item = document.getElementById("file").files[0]
+        let text = document.getElementById("text").value
+        console.log(text)
         let data = new FormData()
         data.append("files",item)
         data.append("name",item.name)
+        data.append("text",text)
         let res = await fetch("/upload",{
             method:"POST",
-            body:data,
+            body:data
         })
 
         let result = await res.json()
 
+        // let text_res = await fetch("/word",{
+        //     method:"POST",
+        //     body:JSON.stringify({
+        //         "data":text
+        //     }),
+        //     headers:{"Content-Type":"application/json"}
+        // })
+
+        // let text_result = text_res.json()
+
+        
+        insert_msgboard(item,result,text)
+    }
+    
+    function insert_msgboard(item,result,text){
         if(result["ok"]){
             let img = document.createElement("img")
             img.src = "http://d3nczlg85bnjib.cloudfront.net/"+item.name
-            msg_board.appendChild(img)
+            img.classList.add("msg_img")
+            let msg = document.createElement("p")
+            msg.innerHTML = text
+            let msg_box = document.createElement("div")
+            msg_box.classList.add("msg_box")
+            msg_box.appendChild(img)
+            msg_box.appendChild(msg)
+            let msg_img = document.getElementsByClassName("msg_box")
+            msg_board.insertBefore(msg_box,msg_img[0])
         }
     }
+
+    async function get_img_and_text(){
+        let res = await fetch("/get_img")
+        let data = await res.json()
+
+        msg_board.innerHTML = ""
+
+        data["data"].forEach(element => {
+            let img = document.createElement("img")
+            img.src = element.url
+            img.classList.add("msg_img")
+            let msg = document.createElement("p")
+            msg.innerHTML = element.text
+            let msg_box = document.createElement("div")
+            msg_box.classList.add("msg_box")
+            msg_box.appendChild(img)
+            msg_box.appendChild(msg)
+            msg_board.appendChild(msg_box)
+        });
+    }
+
+    get_img_and_text()
 </script>
