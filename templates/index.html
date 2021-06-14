@@ -1,0 +1,42 @@
+<style>
+  img {
+    width: 100px;
+    height: 100px;
+  }
+  #message_board{
+      display: flex;
+      flex-direction: column;
+  }
+</style>
+<form id="form_test" enctype="multipart/form-data">
+  <input type="file" size="30" name="photo" id="file"/>
+  <input type="submit" id="upload" />
+</form>
+<div id="message_board"></div>
+<script>
+    let upload = document.getElementById("form_test")
+    let msg_board = document.getElementById("message_board")
+    upload.addEventListener("submit",function(e){
+        e.preventDefault()
+        upload_file()
+    })
+    
+    async function upload_file(){
+        let item = document.getElementById("file").files[0]
+        let data = new FormData()
+        data.append("files",item)
+        data.append("name",item.name)
+        let res = await fetch("/upload",{
+            method:"POST",
+            body:data,
+        })
+
+        let result = await res.json()
+
+        if(result["ok"]){
+            let img = document.createElement("img")
+            img.src = "http://d3nczlg85bnjib.cloudfront.net/"+item.name
+            msg_board.appendChild(img)
+        }
+    }
+</script>
