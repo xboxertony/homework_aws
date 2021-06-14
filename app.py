@@ -2,8 +2,9 @@ import re
 import boto3
 from flask import Flask,render_template,jsonify
 from flask.globals import request
-from config import aws_access_key_id,aws_secret_access_key,DATABASE_URI
+from config import aws_access_key_id,aws_secret_access_key,DATABASE_URI,dict_for_database
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 
 s3 = boto3.client(
     "s3",
@@ -14,6 +15,7 @@ s3 = boto3.client(
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_BINDS"] = dict_for_database
 db = SQLAlchemy(app)
 
 allow_path = set(["jpg","png","JPG","PNG"])
@@ -43,6 +45,17 @@ def home():
 def get_img():
     sql = f"select url,text from img_test order by id desc"
     r = db.engine.execute(sql)
+    arr = []
+    for i in r:
+        item = {"url":i[0],"text":i[1]}
+        arr.append(item)
+    return jsonify({"data":arr})
+
+@app.route("/get_another")
+def get_another():
+    engine = create_engine(app.config['SQLALCHEMY_BINDS']['db2'])
+    sql = f"select url,text from img_test order by id desc"
+    r = db.session.execute(sql,bind=engine)
     arr = []
     for i in r:
         item = {"url":i[0],"text":i[1]}
