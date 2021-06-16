@@ -33,8 +33,8 @@ def upload():
         real_path = "http://d3nczlg85bnjib.cloudfront.net/"+photo.filename
         sql = f"insert into img_test (url,text) values ('{real_path}','{text}')"
         db.engine.execute(sql)
-        photo.save(file_path)
-        s3.upload_file(file_path,"tonytony58",photo.filename,ExtraArgs={'ACL': 'public-read'})
+        ##photo.save(file_path)
+        s3.upload_fileobj(photo,"tonytony58",photo.filename,ExtraArgs={'ACL': 'public-read'})
         return jsonify({"ok":True})
 
 @app.route("/")
