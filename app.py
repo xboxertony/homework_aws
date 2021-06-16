@@ -2,7 +2,7 @@ import re
 import boto3
 from flask import Flask,render_template,jsonify
 from flask.globals import request
-from config import aws_access_key_id,aws_secret_access_key,DATABASE_URI,dict_for_database
+from config import aws_access_key_id,aws_secret_access_key,DATABASE_URI
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 
