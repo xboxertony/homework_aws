@@ -53,7 +53,7 @@ def get_img():
 
 @app.route("/loaderio-59a050b1530111addfe9e37248e44f17/")
 def get():
-    return "ok"
+    return "loaderio-59a050b1530111addfe9e37248e44f17"
 
 # @app.route("/get_another")
 # def get_another():
