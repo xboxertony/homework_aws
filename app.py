@@ -51,6 +51,10 @@ def get_img():
         arr.append(item)
     return jsonify({"data":arr})
 
+@app.route("/loaderio-59a050b1530111addfe9e37248e44f17")
+def get():
+    return "ok"
+
 # @app.route("/get_another")
 # def get_another():
 #     engine = create_engine(app.config['SQLALCHEMY_BINDS']['db2'])
